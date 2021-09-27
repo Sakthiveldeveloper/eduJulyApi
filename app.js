@@ -1,5 +1,77 @@
 var express = require('express');
 const app = express();
+const port =process.env.PORT||8210;
+const mongo = require('mongodb');
+const MongoClient = mongo.MongoClient;
+//const mongourl = "mongodb://localhost:27017"
+const mongourl = "mongodb+srv://edureka:1234@cluster0.t9dwc.mongodb.net/edujuly?retryWrites=true&w=majority"
+
+var db;
+let col_name ="location"
+let col_name1 ="res"
+//get
+app.get('/',(req,res) => {
+    res.send("Welcome to Node Api88")
+})
+
+//list of city
+app.get('/location',(req,res) =>{
+    db.collection(col_name).find().toArray((err,result)=>{
+        if(err) throw err;
+        res.send(result)
+    })
+})
+//List all restaurants
+app.get('/restaurants',(req,res) =>{
+    db.collection(col_name1).find().toArray((err,result)=>{
+        if(err) throw err;
+        res.send(result)
+    })
+})
+//list of restaurants with respect to city
+// params example
+/*app.get('/resturent/:cityId',(req,res) =>{
+    var cityId = req.params.cityId;
+    console.log("cityId>>>>",cityId)
+    db.collection('resturent').find({city:cityId}).toArray((err,result)=>{
+        if(err) throw err;
+        res.send(result)
+    })
+})*/
+/*app.get('/restaurent',(req,res) =>{
+    var cityId = req.query.cityId?req.query.cityId:"2";
+    console.log("cityId>>>>",cityId)
+    db.collection(col_name1).find({city:cityId}).toArray((err,result)=>{
+        if(err) throw err;
+        res.send(result)
+    })
+})*/
+// query example
+app.get('/restaurant',(req,res) =>{
+    var cityId = req.query.cityId?req.query.cityId:"2";
+    db.collection(col_name1).find({city:cityId}).toArray((err,result)=>{
+        if(err) throw err;
+        res.send(result)
+    })
+})
+
+//list of quicksearch
+app.get('/quicksearch',(req,res) =>{
+    db.collection('mealtype').find().toArray((err,result)=>{
+        if(err) throw err;
+        res.send(result)
+    })
+})
+
+MongoClient.connect(mongourl, (err,client) => {
+    if(err) console.log("Error While Connecting");
+    db = client.db('edujuly');
+    app.listen(port,()=>{
+        console.log(`listening on port no ${port}`)
+    });
+})
+/*var express = require('express');
+const app = express();
 const port = process.env.PORT||8210;
 const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
@@ -35,7 +107,7 @@ app.get('/restaurants',(req,res) =>{
         if(err) throw err;
         res.send(result)
     })
-})*/
+})*
 // query example
 app.get('/restaurant',(req,res) =>{
     var cityId = req.query.cityId?req.query.cityId:"2";
@@ -60,4 +132,4 @@ MongoClient.connect(mongourl, (err,client) => {
     app.listen(port,()=>{
         console.log(`listening on port no ${port}`)
     });
-})
+})*/
